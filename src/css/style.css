@@ -110,7 +110,7 @@ ul li {
   background-color: #202020;
 }
 
-#add-task {
+.add-task {
   color: #ffffff71;
   cursor: pointer;
   border-radius: 5px;
@@ -118,7 +118,7 @@ ul li {
   background-color: #ffffff0e;
 }
 
-#add-task:hover {
+.add-task:hover {
   background-color: #2f2f2f;
 }
 
@@ -139,6 +139,35 @@ ul li {
 
 .task:hover {
   background-color: #2f2f2f;
+}
+
+.modal-add-task {
+  position: fixed; 
+  z-index: 999; 
+  left: 0;
+  top: 0;
+  width: 100vw; 
+  height: 100vh; 
+  background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-add-task-content {
+  background-color: #fff;
+  margin: 100px auto; 
+  padding: 20px;
+  width: 50%; 
+  font-size: 20px;
+  color: #000;
+  display: flex;
+  justify-content: space-between;
+ }
+
+span {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
 
 /*TUT*/

@@ -3,6 +3,8 @@ import "../css/style.css";
 const currentDateTitle = document.querySelector(".current-date");
 const icons = document.querySelector(".icons");
 const allDays = document.querySelector(".days");
+const calendar = document.querySelector(".calendar");
+const modal = document.querySelector(".modal-add-task");
 
 let currentDate = new Date();
 let currYear = currentDate.getFullYear();
@@ -79,7 +81,13 @@ const renderCalendar = () => {
 
     dayLiTag += `<li class="${isWeekend ? "weekend" : "weekday"}">
     <div class="days-header">
-      <span id="add-task" class="material-symbols-outlined"> add </span>
+      <span id="task-${
+        currentDate.getMonth() - 1 < 0
+          ? currentDate.getFullYear() - 1
+          : currentDate.getFullYear()
+      }-${currentDate.getMonth() - 1 < 0 ? 11 : currentDate.getMonth() - 1}-${
+      lastDateOfLastMonth - i + 1
+    }" class="material-symbols-outlined add-task"> add </span>
       <p class="day inactive">${lastDateOfLastMonth - i + 1}</p>
     </div>
     <div class="tasks">
@@ -90,7 +98,7 @@ const renderCalendar = () => {
   for (let i = 1; i <= lastDateOfMonth; i++) {
     const isWeekend = dayIsWeekend(i);
     const isToday =
-      i === currentDate.getDate() &&
+      i === new Date().getDate() &&
       currMonth === new Date().getMonth() &&
       currYear === new Date().getFullYear()
         ? "day active"
@@ -98,7 +106,7 @@ const renderCalendar = () => {
 
     dayLiTag += `<li class="${isWeekend ? "weekend" : "weekday"}">
     <div class="days-header">
-      <span id="add-task" class="material-symbols-outlined"> add </span>
+      <span id="task-${currentDate.getFullYear()}-${currentDate.getMonth()}-${i}" class="material-symbols-outlined add-task"> add </span>
       <p class="${isToday}">${i}</p>
     </div>
     <div class="tasks">
@@ -113,7 +121,13 @@ const renderCalendar = () => {
 
     dayLiTag += `<li class="${isWeekend ? "weekend" : "weekday"}">
     <div class="days-header">
-      <span id="add-task" class="material-symbols-outlined"> add </span>
+      <span id="task-${
+        currentDate.getMonth() + 1 > 11
+          ? currentDate.getFullYear() + 1
+          : currentDate.getFullYear()
+      }-${
+      currentDate.getMonth() + 1 > 11 ? 0 : currentDate.getMonth() + 1
+    }-${i}" class="material-symbols-outlined add-task"> add </span>
       <p class="day inactive">${i}</p>
     </div>
     <div class="tasks">
@@ -155,4 +169,15 @@ icons.addEventListener("click", (e) => {
 
     renderCalendar();
   }
+});
+
+calendar.addEventListener("click", (e) => {
+  if (e.target.textContent.trim() === "add") {
+    console.log(e.target);
+    modal.classList.toggle("hidden");
+  }
+});
+
+document.getElementById("close-modal").addEventListener("click", () => {
+  modal.classList.toggle("hidden");
 });
