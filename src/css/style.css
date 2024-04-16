@@ -142,14 +142,14 @@ ul li {
 }
 
 .modal-add-task {
-  position: absolute; 
-  z-index: 999; 
+  position: absolute;
+  z-index: 999;
   left: 0;
   top: 0;
-  width: 100%; 
-  height: 100%; 
-  background-color: rgba(0,0,0,0.4);
-  display: flex; 
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
@@ -161,14 +161,95 @@ ul li {
   width: 50%;
   max-width: 920px;
   height: 80%;
-  font-size: 20px;
-  display: flex;
-  justify-content: space-between;
- }
+  font-size: 1.2rem;
+  position: relative;
+}
 
-span {
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task-header-title {
+  font-size: 1.45rem;
+  font-weight: 500;
+}
+
+#close-modal {
+  border: none;
+  background: none;
+  cursor: pointer;
+  height: 30px;
+  width: 30px;
+}
+
+#close-icon {
+  width: inherit;
+  height: inherit;
+  line-height: 30px;
+  font-size: 1.8rem;
+  color: #ffffffcf;
+}
+
+#close-icon:hover {
+  color: #ffffff71;
+}
+
+.task-form-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.task-form-label {
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+
+.task-form-label,
+#title-input,
+#description-input {
+  display: block;
+}
+
+
+#title-input,
+#description-input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #2f2f2f;
+  background-color: #ffffff0e;
+  color: #ffffffcf;
+}
+
+.task-form-footer {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  position: relative;
+  top: 150px;
+}
+
+.btn {
+  background-color: #ffffff0e;
+  color: #ffffffcf;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  border: none;
   cursor: pointer;
 }
+
+.btn:hover {
+  background-color: #2f2f2f;
+}
+
+
 
 .hidden {
   display: none;

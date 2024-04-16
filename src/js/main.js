@@ -5,11 +5,42 @@ const icons = document.querySelector(".icons");
 const allDays = document.querySelector(".days");
 const calendar = document.querySelector(".calendar");
 const modal = document.querySelector(".modal-add-task");
+const modalForm = document.querySelector(".modal-add-task");
+const addOrUpdateTaskBtn = document.getElementById("add-or-update-task");
+const titleInput = document.getElementById("title-input");
+const descriptionInput = document.getElementById("description-input");
+
+let taskCurrentId = "";
+const taskData = JSON.parse(localStorage.getItem("data")) || [];
+let currentTask = {};
+
+const addOrUpdateTask = () => {
+  const dataArrIndex = taskData.findIndex((item) => item.id === currentTask.id);
+  const taskObj = {
+    id: `${taskCurrentId.split("-").join("-")}-${Date.now()}`,
+    title: titleInput.value,
+    description: descriptionInput.value,
+  };
+
+
+  if (dataArrIndex === -1) {
+    taskData.push(taskObj);
+  } else {
+    taskData[dataArrIndex] = taskObj;
+  }
+
+  localStorage.setItem("data", JSON.stringify(taskData));
+};
+
+modalForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  addOrUpdateTask();
+});
 
 let currentDate = new Date();
 let currYear = currentDate.getFullYear();
 let currMonth = currentDate.getMonth();
-
 const months = [
   "January",
   "February",
@@ -24,9 +55,7 @@ const months = [
   "November",
   "December",
 ];
-
 const currentDaysOnTable = 42;
-
 const numberDayInWeek = [6, 0, 1, 2, 3, 4, 5];
 
 const dayIsWeekend = (day, plusOrMinusMonth = 0, plusOrMinus = "") => {
@@ -148,6 +177,7 @@ icons.addEventListener("click", (e) => {
     currYear = currentDate.getFullYear();
 
     renderCalendar();
+    return;
   } else if (e.target.id === "prev") {
     if (currMonth === 0) {
       currentDate = new Date(currYear - 1, 11);
@@ -158,6 +188,7 @@ icons.addEventListener("click", (e) => {
     currMonth = currentDate.getMonth();
 
     renderCalendar();
+    return;
   } else if (e.target.id === "next") {
     if (currMonth === 11) {
       currentDate = new Date(currYear + 1, 0);
@@ -168,12 +199,13 @@ icons.addEventListener("click", (e) => {
     currMonth = currentDate.getMonth();
 
     renderCalendar();
+    return;
   }
 });
 
 calendar.addEventListener("click", (e) => {
   if (e.target.textContent.trim() === "add") {
-    console.log(e.target);
+    taskCurrentId = e.target.id;
     modal.classList.toggle("hidden");
   }
 });

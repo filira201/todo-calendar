@@ -29,13 +29,44 @@
   <body>
     <div class="wrapper">
       <header class="wrapper-header">
-
-        <div class="modal-add-task hidden">
+        <form class="modal-add-task hidden">
           <div class="modal-add-task-content">
-            <p>Здесь может быть ваша реклама...</p>
-            <span id="close-modal">times</span>
+            <div class="task-header">
+              <p class="task-header-title">Add your task</p>
+              <button type="button" id="close-modal">
+                <span id="close-icon" class="material-symbols-outlined">
+                  close
+                </span>
+              </button>
+            </div>
+
+            <div class="task-form-body">
+              <label class="task-form-label" for="title-input">Title</label>
+              <input
+                required
+                type="text"
+                class="form-control"
+                id="title-input"
+              />
+              <label class="task-form-label" for="description-input"
+                >Description</label
+              >
+              <textarea
+                class="form-control"
+                id="description-input"
+                cols="30"
+                required
+                rows="5"
+              ></textarea>
+            </div>
+
+            <div class="task-form-footer">
+              <button id="edit-task" class="btn hidden">Edit</button>
+              <button type="submit" id="add-or-update-task" class="btn">Add Task</button>
+              <button id="delete-task" class="btn hidden">Delete</button>
+            </div>
           </div>
-        </div>
+        </form>
 
         <p class="current-date"></p>
         <div class="icons">
