@@ -6,7 +6,6 @@ const allDays = document.querySelector(".days");
 const calendar = document.querySelector(".calendar");
 const modalForm = document.querySelector(".modal-add-task");
 const addOrUpdateTaskBtn = document.getElementById("add-or-update-task");
-const editTaskBtn = document.getElementById("edit-task");
 const deleteTaskBtn = document.getElementById("delete-task");
 const titleInput = document.getElementById("title-input");
 const descriptionInput = document.getElementById("description-input");
@@ -16,7 +15,6 @@ const taskData = JSON.parse(localStorage.getItem("data")) || [];
 let currentTask = {};
 
 const addOrUpdateTask = () => {
-  addOrUpdateTaskBtn.innerText = "Add Task";
   const dataArrIndex = taskData.findIndex((item) => item.id === currentTask.id);
   const taskObj = {
     id: `${taskCurrentId.split("-", 3).join("-")}-${Date.now()}`,
@@ -30,27 +28,30 @@ const addOrUpdateTask = () => {
     taskData[dataArrIndex] = taskObj;
   }
   localStorage.setItem("data", JSON.stringify(taskData));
-  updateTaskContainer(taskObj);
+  renderCalendar();
   reset();
 };
 
-const updateTaskContainer = (taskObj) => {
-  const { id, title } = taskObj;
-  const parentTaskElement = document.getElementById(
-    `${id.split("-", 3).join("-")}-li-container`
-  );
-  if (parentTaskElement.children.length === 1) {
-    parentTaskElement.innerHTML += `
-    <div id="${id.split("-", 3).join("-")}-tasks-container" class="tasks">
-      <p id="${id}" class="task">${title}</p>
-    </div>
-  `;
-  } else {
-    document.getElementById(
-      `${id.split("-", 3).join("-")}-tasks-container`
-    ).innerHTML += `<p id="${id}" class="task">${title}</p>`;
-  }
-};
+// const updateTaskContainer = (taskObj) => {
+//   const { id, title } = taskObj;
+//   const parentTaskElement = document.getElementById(
+//     `${id.split("-", 3).join("-")}-li-container`
+//   );
+//   if (parentTaskElement.children.length === 1) {
+//     parentTaskElement.innerHTML += `
+//     <div id="${id.split("-", 3).join("-")}-tasks-container" class="tasks">
+//       <p id="${id}" class="task">${title}</p>
+//     </div>
+//   `;
+//   } else {
+//     document.getElementById(
+//       `${id.split("-", 3).join("-")}-tasks-container`
+//     ).innerHTML += `<p id="${id}" class="task">${title}</p>`;
+//   }
+//   document
+//     .getElementById(`${id.split("-", 3).join("-")}-tasks-container`)
+//     .addEventListener("click", viewTaskOrEditTask);
+// };
 
 const renderTasksContainer = () => {
   taskData.forEach(({ id, title }) => {
@@ -69,8 +70,23 @@ const renderTasksContainer = () => {
           `${id.split("-", 3).join("-")}-tasks-container`
         ).innerHTML += `<p id="${id}" class="task">${title}</p>`;
       }
+      document
+        .getElementById(`${id.split("-", 3).join("-")}-tasks-container`)
+        .addEventListener("click", viewTaskOrEditTask);
     }
   });
+};
+
+const viewTaskOrEditTask = (e) => {
+  const dataArrIndex = taskData.findIndex((item) => item.id === e.target.id);
+  if (dataArrIndex >= 0) {
+    taskCurrentId = e.target.id;
+    currentTask = taskData[dataArrIndex];
+    titleInput.value = currentTask.title;
+    descriptionInput.value = currentTask.description;
+
+    modalForm.classList.toggle("hidden");
+  }
 };
 
 const reset = () => {
@@ -262,7 +278,6 @@ icons.addEventListener("click", (e) => {
 calendar.addEventListener("click", (e) => {
   if (e.target.textContent.trim() === "add") {
     taskCurrentId = e.target.id;
-    console.log(taskCurrentId);
     modalForm.classList.toggle("hidden");
   }
 });
