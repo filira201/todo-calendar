@@ -4,9 +4,10 @@ const currentDateTitle = document.querySelector(".current-date");
 const icons = document.querySelector(".icons");
 const allDays = document.querySelector(".days");
 const calendar = document.querySelector(".calendar");
-const modal = document.querySelector(".modal-add-task");
 const modalForm = document.querySelector(".modal-add-task");
 const addOrUpdateTaskBtn = document.getElementById("add-or-update-task");
+const editTaskBtn = document.getElementById("edit-task");
+const deleteTaskBtn = document.getElementById("delete-task");
 const titleInput = document.getElementById("title-input");
 const descriptionInput = document.getElementById("description-input");
 
@@ -15,9 +16,10 @@ const taskData = JSON.parse(localStorage.getItem("data")) || [];
 let currentTask = {};
 
 const addOrUpdateTask = () => {
+  addOrUpdateTaskBtn.innerText = "Add Task";
   const dataArrIndex = taskData.findIndex((item) => item.id === currentTask.id);
   const taskObj = {
-    id: `${taskCurrentId.split("-").splice(1).join("-")}-${Date.now()}`,
+    id: `${taskCurrentId.split("-", 3).join("-")}-${Date.now()}`,
     title: titleInput.value,
     description: descriptionInput.value,
   };
@@ -28,29 +30,58 @@ const addOrUpdateTask = () => {
     taskData[dataArrIndex] = taskObj;
   }
   localStorage.setItem("data", JSON.stringify(taskData));
-  updateTaskContainer();
+  updateTaskContainer(taskObj);
+  reset();
 };
 
-const renderTasks = () => {
+const updateTaskContainer = (taskObj) => {
+  const { id, title } = taskObj;
+  const parentTaskElement = document.getElementById(
+    `${id.split("-", 3).join("-")}-li-container`
+  );
+  if (parentTaskElement.children.length === 1) {
+    parentTaskElement.innerHTML += `
+    <div id="${id.split("-", 3).join("-")}-tasks-container" class="tasks">
+      <p id="${id}" class="task">${title}</p>
+    </div>
+  `;
+  } else {
+    document.getElementById(
+      `${id.split("-", 3).join("-")}-tasks-container`
+    ).innerHTML += `<p id="${id}" class="task">${title}</p>`;
+  }
+};
+
+const renderTasksContainer = () => {
   taskData.forEach(({ id, title }) => {
     const parentTaskElement = document.getElementById(
-      id.split("-", 3).join("-")
+      `${id.split("-", 3).join("-")}-li-container`
     );
     if (parentTaskElement) {
-      parentTaskElement.innerHTML += `
-        <div id="container-${parentTaskElement.id}" class="tasks">
-          <p class="task id="${id}">${title}</p>
+      if (parentTaskElement.children.length === 1) {
+        parentTaskElement.innerHTML += `
+        <div id="${id.split("-", 3).join("-")}-tasks-container" class="tasks">
+          <p id="${id}" class="task">${title}</p>
         </div>
       `;
+      } else {
+        document.getElementById(
+          `${id.split("-", 3).join("-")}-tasks-container`
+        ).innerHTML += `<p id="${id}" class="task">${title}</p>`;
+      }
     }
   });
 };
 
-const updateTaskContainer = () => {};
+const reset = () => {
+  titleInput.value = "";
+  descriptionInput.value = "";
+  modalForm.classList.toggle("hidden");
+  currentTask = {};
+};
 
 modalForm.addEventListener("submit", (e) => {
   e.preventDefault();
-
   addOrUpdateTask();
 });
 
@@ -130,15 +161,15 @@ const renderCalendar = () => {
         : currentDate.getFullYear()
     }-${currentDate.getMonth() - 1 < 0 ? 11 : currentDate.getMonth() - 1}-${
       lastDateOfLastMonth - i + 1
-    }" class="${isWeekend ? "weekend" : "weekday"}">
+    }-li-container" class="${isWeekend ? "weekend" : "weekday"}">
     <div class="days-header">
-      <span id="task-${
+      <span id="${
         currentDate.getMonth() - 1 < 0
           ? currentDate.getFullYear() - 1
           : currentDate.getFullYear()
       }-${currentDate.getMonth() - 1 < 0 ? 11 : currentDate.getMonth() - 1}-${
       lastDateOfLastMonth - i + 1
-    }" class="material-symbols-outlined add-task"> add </span>
+    }-task-add-icon" class="material-symbols-outlined add-task"> add </span>
       <p class="day inactive">${lastDateOfLastMonth - i + 1}</p>
     </div>
   </li>`;
@@ -153,11 +184,11 @@ const renderCalendar = () => {
         ? "day active"
         : "day";
 
-    dayLiTag += `<li id="${currentDate.getFullYear()}-${currentDate.getMonth()}-${i}" class="${
+    dayLiTag += `<li id="${currentDate.getFullYear()}-${currentDate.getMonth()}-${i}-li-container" class="${
       isWeekend ? "weekend" : "weekday"
     }">
     <div class="days-header">
-      <span id="task-${currentDate.getFullYear()}-${currentDate.getMonth()}-${i}" class="material-symbols-outlined add-task"> add </span>
+      <span id="${currentDate.getFullYear()}-${currentDate.getMonth()}-${i}-task-add-icon" class="material-symbols-outlined add-task"> add </span>
       <p class="${isToday}">${i}</p>
     </div>
   </li>`;
@@ -174,15 +205,15 @@ const renderCalendar = () => {
         : currentDate.getFullYear()
     }-${
       currentDate.getMonth() + 1 > 11 ? 0 : currentDate.getMonth() + 1
-    }-${i}" class="${isWeekend ? "weekend" : "weekday"}">
+    }-${i}-li-container" class="${isWeekend ? "weekend" : "weekday"}">
     <div class="days-header">
-      <span id="task-${
+      <span id="${
         currentDate.getMonth() + 1 > 11
           ? currentDate.getFullYear() + 1
           : currentDate.getFullYear()
       }-${
       currentDate.getMonth() + 1 > 11 ? 0 : currentDate.getMonth() + 1
-    }-${i}" class="material-symbols-outlined add-task"> add </span>
+    }-${i}-task-add-icon" class="material-symbols-outlined add-task"> add </span>
       <p class="day inactive">${i}</p>
     </div>
   </li>`;
@@ -190,7 +221,7 @@ const renderCalendar = () => {
 
   currentDateTitle.textContent = `${months[currMonth]} ${currYear}`;
   allDays.innerHTML = dayLiTag;
-  renderTasks();
+  renderTasksContainer();
 };
 
 renderCalendar();
@@ -232,10 +263,10 @@ calendar.addEventListener("click", (e) => {
   if (e.target.textContent.trim() === "add") {
     taskCurrentId = e.target.id;
     console.log(taskCurrentId);
-    modal.classList.toggle("hidden");
+    modalForm.classList.toggle("hidden");
   }
 });
 
 document.getElementById("close-modal").addEventListener("click", () => {
-  modal.classList.toggle("hidden");
+  reset();
 });
