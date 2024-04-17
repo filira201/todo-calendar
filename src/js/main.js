@@ -17,20 +17,36 @@ let currentTask = {};
 const addOrUpdateTask = () => {
   const dataArrIndex = taskData.findIndex((item) => item.id === currentTask.id);
   const taskObj = {
-    id: `${taskCurrentId.split("-").join("-")}-${Date.now()}`,
+    id: `${taskCurrentId.split("-").splice(1).join("-")}-${Date.now()}`,
     title: titleInput.value,
     description: descriptionInput.value,
   };
-
 
   if (dataArrIndex === -1) {
     taskData.push(taskObj);
   } else {
     taskData[dataArrIndex] = taskObj;
   }
-
   localStorage.setItem("data", JSON.stringify(taskData));
+  updateTaskContainer();
 };
+
+const renderTasks = () => {
+  taskData.forEach(({ id, title }) => {
+    const parentTaskElement = document.getElementById(
+      id.split("-", 3).join("-")
+    );
+    if (parentTaskElement) {
+      parentTaskElement.innerHTML += `
+        <div id="container-${parentTaskElement.id}" class="tasks">
+          <p class="task id="${id}">${title}</p>
+        </div>
+      `;
+    }
+  });
+};
+
+const updateTaskContainer = () => {};
 
 modalForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -108,7 +124,13 @@ const renderCalendar = () => {
   for (let i = firstDayOfMonth; i > 0; i--) {
     const isWeekend = dayIsWeekend(lastDateOfLastMonth - i + 1, -1, "-");
 
-    dayLiTag += `<li class="${isWeekend ? "weekend" : "weekday"}">
+    dayLiTag += `<li id="${
+      currentDate.getMonth() - 1 < 0
+        ? currentDate.getFullYear() - 1
+        : currentDate.getFullYear()
+    }-${currentDate.getMonth() - 1 < 0 ? 11 : currentDate.getMonth() - 1}-${
+      lastDateOfLastMonth - i + 1
+    }" class="${isWeekend ? "weekend" : "weekday"}">
     <div class="days-header">
       <span id="task-${
         currentDate.getMonth() - 1 < 0
@@ -118,8 +140,6 @@ const renderCalendar = () => {
       lastDateOfLastMonth - i + 1
     }" class="material-symbols-outlined add-task"> add </span>
       <p class="day inactive">${lastDateOfLastMonth - i + 1}</p>
-    </div>
-    <div class="tasks">
     </div>
   </li>`;
   }
@@ -133,12 +153,12 @@ const renderCalendar = () => {
         ? "day active"
         : "day";
 
-    dayLiTag += `<li class="${isWeekend ? "weekend" : "weekday"}">
+    dayLiTag += `<li id="${currentDate.getFullYear()}-${currentDate.getMonth()}-${i}" class="${
+      isWeekend ? "weekend" : "weekday"
+    }">
     <div class="days-header">
       <span id="task-${currentDate.getFullYear()}-${currentDate.getMonth()}-${i}" class="material-symbols-outlined add-task"> add </span>
       <p class="${isToday}">${i}</p>
-    </div>
-    <div class="tasks">
     </div>
   </li>`;
   }
@@ -148,7 +168,13 @@ const renderCalendar = () => {
   for (let i = 1; i <= occupiedCells; i++) {
     const isWeekend = dayIsWeekend(i, 1, "+");
 
-    dayLiTag += `<li class="${isWeekend ? "weekend" : "weekday"}">
+    dayLiTag += `<li id="${
+      currentDate.getMonth() + 1 > 11
+        ? currentDate.getFullYear() + 1
+        : currentDate.getFullYear()
+    }-${
+      currentDate.getMonth() + 1 > 11 ? 0 : currentDate.getMonth() + 1
+    }-${i}" class="${isWeekend ? "weekend" : "weekday"}">
     <div class="days-header">
       <span id="task-${
         currentDate.getMonth() + 1 > 11
@@ -159,13 +185,12 @@ const renderCalendar = () => {
     }-${i}" class="material-symbols-outlined add-task"> add </span>
       <p class="day inactive">${i}</p>
     </div>
-    <div class="tasks">
-    </div>
   </li>`;
   }
 
   currentDateTitle.textContent = `${months[currMonth]} ${currYear}`;
   allDays.innerHTML = dayLiTag;
+  renderTasks();
 };
 
 renderCalendar();
@@ -206,6 +231,7 @@ icons.addEventListener("click", (e) => {
 calendar.addEventListener("click", (e) => {
   if (e.target.textContent.trim() === "add") {
     taskCurrentId = e.target.id;
+    console.log(taskCurrentId);
     modal.classList.toggle("hidden");
   }
 });
