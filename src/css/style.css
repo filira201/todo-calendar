@@ -128,7 +128,14 @@ ul li {
   height: 80px;
 }
 
-.task {
+.task-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.p-task {
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 2px 6px;
@@ -139,8 +146,24 @@ ul li {
   margin-top: 6px;
 }
 
-.task:hover {
+.p-task:hover {
   background-color: #2f2f2f;
+}
+
+.delete-task {
+  user-select: none;
+  font-size: 1.3rem;
+  width: 20px;
+  height: 20px;
+  line-height: 24px;
+  cursor: pointer;
+  color: #ffffffcf;
+
+}
+
+.delete-task:hover {
+  color: #ffffff71;
+
 }
 
 .modal-add-task {

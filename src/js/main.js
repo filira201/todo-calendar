@@ -6,7 +6,6 @@ const allDays = document.querySelector(".days");
 const calendar = document.querySelector(".calendar");
 const modalForm = document.querySelector(".modal-add-task");
 const addOrUpdateTaskBtn = document.getElementById("add-or-update-task");
-const deleteTaskBtn = document.getElementById("delete-task");
 const titleInput = document.getElementById("title-input");
 const descriptionInput = document.getElementById("description-input");
 
@@ -62,13 +61,25 @@ const renderTasksContainer = () => {
       if (parentTaskElement.children.length === 1) {
         parentTaskElement.innerHTML += `
         <div id="${id.split("-", 3).join("-")}-tasks-container" class="tasks">
-          <p id="${id}" class="task">${title}</p>
+          <div id="${id}-task-container" class="task-container">
+            <p id="${id}" class="p-task">${title}</p>
+            <span id="${id}-delete-task-icon" class="material-symbols-outlined delete-task">
+              close
+            </span>
+          </div>   
         </div>
       `;
       } else {
         document.getElementById(
           `${id.split("-", 3).join("-")}-tasks-container`
-        ).innerHTML += `<p id="${id}" class="task">${title}</p>`;
+        ).innerHTML += `
+        <div id="${id}-task-container" class="task-container">
+            <p id="${id}" class="p-task">${title}</p>
+            <span id="${id}-delete-task-icon" class="material-symbols-outlined delete-task">
+              close
+            </span>
+          </div> 
+        `;
       }
       document
         .getElementById(`${id.split("-", 3).join("-")}-tasks-container`)
@@ -86,6 +97,13 @@ const viewTaskOrEditTask = (e) => {
     descriptionInput.value = currentTask.description;
 
     modalForm.classList.toggle("hidden");
+  } else if (e.target.id.split("-")[4] === "delete") {
+    const dataArrDeletIndex = taskData.findIndex(
+      (item) => item.id === e.target.id.split("-", 4).join("-")
+    );
+    e.target.parentElement.remove();
+    taskData.splice(dataArrDeletIndex, 1);
+    localStorage.setItem("data", JSON.stringify(taskData));
   }
 };
 
