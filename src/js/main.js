@@ -10,7 +10,7 @@ const titleInput = document.getElementById("title-input");
 const descriptionInput = document.getElementById("description-input");
 
 let taskCurrentId = "";
-const taskData = JSON.parse(localStorage.getItem("data")) || [];
+const taskData = JSON.parse(localStorage.getItem("dataTaskJS")) || [];
 let currentTask = {};
 
 const addOrUpdateTask = () => {
@@ -26,7 +26,7 @@ const addOrUpdateTask = () => {
   } else {
     taskData[dataArrIndex] = taskObj;
   }
-  localStorage.setItem("data", JSON.stringify(taskData));
+  localStorage.setItem("dataTaskJS", JSON.stringify(taskData));
   renderCalendar();
   reset();
 };
@@ -103,7 +103,7 @@ const viewTaskOrEditTask = (e) => {
     );
     e.target.parentElement.remove();
     taskData.splice(dataArrDeletIndex, 1);
-    localStorage.setItem("data", JSON.stringify(taskData));
+    localStorage.setItem("dataTaskJS", JSON.stringify(taskData));
   }
 };
 
